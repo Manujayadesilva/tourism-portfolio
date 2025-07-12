@@ -1,6 +1,27 @@
+"use client"
 import Image from 'next/image';
+import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/firebase/client";
+
+
+
 
 export default function Home() {
+
+  const [businesses, setBusinesses] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchBusinesses = async () => {
+      const querySnapshot = await getDocs(collection(db, "businesses"));
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setBusinesses(data);
+    };
+
+    fetchBusinesses();
+  }, []);
+
+
   return (
     <main className="min-h-screen bg-white text-gray-900">
 
@@ -62,38 +83,23 @@ export default function Home() {
         <section id="featured" className="py-20 px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-4xl font-bold text-center mb-12">Featured Tourism Businesses</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              
-              <div className="bg-white shadow rounded-lg overflow-hidden">
-                <Image src="/business1.jpg" alt="Business 1" width={400} height={192} className="w-full h-48 object-cover" />
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold mb-2">Blue Ocean Hotel</h3>
-                  <p className="text-gray-600">Experience beachfront luxury in Mirissa. Book your stay now!</p>
-                  <a href="#" className="text-yellow-500 font-semibold inline-block mt-2">Visit Website →</a>
-                </div>
-              </div>
-
-              <div className="bg-white shadow rounded-lg overflow-hidden">
-                <Image src="/business2.jpg" alt="Business 2" width={400} height={192} className="w-full h-48 object-cover" />
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold mb-2">Safari Adventure Tours</h3>
-                  <p className="text-gray-600">Wildlife jeep safaris in Yala & Udawalawe. Private & group tours available.</p>
-                  <a href="#" className="text-yellow-500 font-semibold inline-block mt-2">Visit Website →</a>
-                </div>
-              </div>
-
-              <div className="bg-white shadow rounded-lg overflow-hidden">
-                <Image src="/business3.jpg" alt="Business 3" width={400} height={192} className="w-full h-48 object-cover" />
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold mb-2">Ella Spice Garden</h3>
-                  <p className="text-gray-600">Join a traditional cooking class and spice garden walk in Ella.</p>
-                  <a href="#" className="text-yellow-500 font-semibold inline-block mt-2">Visit Website →</a>
-                </div>
-              </div>
-
-            </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {businesses.map(biz => (
+                  <div key={biz.id} className="bg-white shadow rounded-lg overflow-hidden">
+                    <img src={biz.image} alt={biz.name} className="w-full h-48 object-cover" />
+                    <div className="p-4">
+                      <h3 className="text-xl font-semibold mb-2">{biz.name}</h3>
+                      <p className="text-gray-600">{biz.description}</p>
+                      <a href={biz.link} className="text-yellow-500 font-semibold inline-block mt-2" target="_blank" rel="noopener noreferrer">
+                        Visit Website →
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div> 
           </div>
         </section>
+
 
         {/* Contact Section */}
         <section id="contact" className="py-20 bg-yellow-50 px-6">
