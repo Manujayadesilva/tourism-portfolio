@@ -86,7 +86,13 @@ export default function Home() {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {businesses.map(biz => (
                   <div key={biz.id} className="bg-white shadow rounded-lg overflow-hidden">
-                    <img src={biz.image} alt={biz.name} className="w-full h-48 object-cover" />
+                    <Image 
+                      src={biz.image} 
+                      alt={biz.name} 
+                      width={400}
+                      height={192}
+                      className="w-full h-48 object-cover" 
+                    />
                     <div className="p-4">
                       <h3 className="text-xl font-semibold mb-2">{biz.name}</h3>
                       <p className="text-gray-600">{biz.description}</p>
